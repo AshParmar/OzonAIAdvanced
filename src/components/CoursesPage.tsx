@@ -25,11 +25,11 @@ function App() {
   const [showUnlockMessage, setShowUnlockMessage] = useState(false);
 
   const skills: Skill[] = [
-    { id: 'webdev', name: 'Web Development', icon: <Code2 className="w-8 h-8" />, color: 'bg-blue-500' },
-    { id: 'cyber', name: 'Cybersecurity', icon: <Shield className="w-8 h-8" />, color: 'bg-red-500' },
-    { id: 'ai', name: 'Artificial Intelligence', icon: <Brain className="w-8 h-8" />, color: 'bg-purple-500' },
-    { id: 'data', name: 'Data Science', icon: <Database className="w-8 h-8" />, color: 'bg-green-500' },
-    { id: 'mobile', name: 'Mobile Development', icon: <Smartphone className="w-8 h-8" />, color: 'bg-yellow-500' },
+    { id: 'webdev', name: 'Web Development', icon: <Code2 className="w-15 h-15" />, color: 'bg-blue-500' },
+    { id: 'cyber', name: 'Cybersecurity', icon: <Shield className="w-15 h-15" />, color: 'bg-red-500' },
+    { id: 'ai', name: 'Artificial Intelligence', icon: <Brain className="w-15 h-15" />, color: 'bg-purple-500' },
+    { id: 'data', name: 'Data Science', icon: <Database className="w-15 h-15" />, color: 'bg-green-500' },
+    { id: 'mobile', name: 'Mobile Development', icon: <Smartphone className="w-15 h-15" />, color: 'bg-yellow-500' },
   ];
 
   const courses: Course[] = [
@@ -121,7 +121,7 @@ function App() {
           <Sparkles className="h-6 w-6" />
           Choose Your Skill
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {skills.map((skill) => (
             <button
               key={skill.id}

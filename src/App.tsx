@@ -56,9 +56,9 @@ function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center">
-                <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                  OZON
-                </div>
+              <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                <img src="/src/ozon.png" alt="Description of image" style={{ width: '70px', height: '70px' }} />
+              </div>
               </div>
               <div className="hidden md:block">
                 <div className="flex items-center space-x-8">
@@ -71,9 +71,9 @@ function App() {
                     <span>About</span>
                   </Link>
                   
-                  <Link to="/courses" className="hover:text-indigo-400 flex items-center">
-                    <BookOpen className="w-4 h-4 mr-2" /> Resume Builder
-                  </Link>
+                  <a href="https://ozon-resume--xi.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center">
+                  <BookOpen className="w-4 h-4 mr-2" /> Resume Builder
+                  </a>
                   {/* AI News Link */}
                   <Link to="/ai-news" className="hover:text-indigo-400 flex items-center">
                     <Newspaper className="w-4 h-4 mr-2" /> AI News

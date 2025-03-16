@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+body::-webkit-scrollbar {
+  width: 12px;
+}
+
+body::-webkit-scrollbar-track {
+  background: #0f0728; /* Dark background for the track */
+}
+
+body::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #0d15ad, #8a2be2); /* Purplish gradient for the thumb */
+  border-radius: 6px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #8a2be2, #6a0dad); /* Hover effect for the thumb */
+}
 @layer base {
   html {
     scroll-behavior: smooth;
