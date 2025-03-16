@@ -7,15 +7,19 @@ import {
   Github,
   Linkedin,
   Twitter,
+  LogIn,
+  UserPlus,
   Home,
   Info,
   Sparkles,
   BookOpen,
   Star,
   Newspaper,
+  ArrowRight, 
   Users,
   MessageSquare,
 } from "lucide-react";
+import { motion } from "framer-motion"; // Import motion from framer-motion
 import CoursesPage from "./components/CoursesPage"; // Ensure this path is correct
 import NewsSection from "./components/NewsSection"; // Import the NewsSection component
 import ScrollToTop from "./ScrollToTop"; // Import the ScrollToTop component
@@ -23,7 +27,7 @@ import ScrollToTop from "./ScrollToTop"; // Import the ScrollToTop component
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-
+  const [showAuth, setShowAuth] = useState(false); // Add showAuth state
   useEffect(() => {
     setIsVisible(true);
 
@@ -74,12 +78,23 @@ function App() {
                   <Link to="/ai-news" className="hover:text-indigo-400 flex items-center">
                     <Newspaper className="w-4 h-4 mr-2" /> AI News
                   </Link>
-                  <button className="px-4 py-2 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-all hover:scale-105">
-                    Login
-                  </button>
-                  <button className="px-4 py-2 rounded-full bg-transparent border border-indigo-500 hover:bg-indigo-500/20 transition-all hover:scale-105">
-                    Sign Up
-                  </button>
+                  <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center px-4 py-2 text-blue-100/80 hover:text-white transition-colors"
+                onClick={() => setShowAuth(true)}
+              >
+                <LogIn className="h-5 w-5 mr-2" />
+                Sign In
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center px-6 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+              >
+                <UserPlus className="h-5 w-5 mr-2" />
+                Sign Up
+              </motion.button>
                 </div>
               </div>
               <div className="md:hidden">
@@ -93,38 +108,42 @@ function App() {
 
         {/* Routes for Pages */}
         <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <section className="pt-32 pb-24 px-4 max-w-7xl mx-auto">
-                  <div className={`text-center transform transition-all duration-1000 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
-                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-                      Revolutionizing Skill Growth with AI
-                    </h1>
-                    <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                      Unlock personalized learning paths tailored to your skills and aspirations. Experience the future of professional development.
-                    </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-4">
-                      <Link to="/courses">
-                        <button className="px-8 py-4 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-all hover:scale-105 flex items-center justify-center">
-                          <BookOpen className="w-5 h-5 mr-2" />
-                          Explore Courses
-                        </button>
-                      </Link>
-                      <button className="px-8 py-4 rounded-full bg-transparent border border-indigo-500 hover:bg-indigo-500/20 transition-all hover:scale-105 flex items-center justify-center">
-                        <Bot className="w-5 h-5 mr-2" /> Chat with Ozon
-                      </button>
-                    </div>
-                  </div>
-                </section>
-                <HomePageSections />
-              </>
-            }
-          />
-          <Route path="/courses" element={<CoursesPage />} /> {/* Explore Courses Route */}
-          <Route path="/ai-news" element={<NewsSection />} /> {/* AI News Route */}
-        </Routes>
+  <Route
+    path="/"
+    element={
+      <>
+        <section className="pt-40 pb-20 px-4 max-w-7xl mx-auto">
+          <div className={`text-center transform transition-all duration-1000 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+              Transform Your Career with AI-Driven Skills
+            </h1>
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+              Discover personalized learning paths and advance your career with intelligent skill recommendations powered by cutting-edge AI technology.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link to="/courses">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-4 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold text-lg shadow-lg hover:shadow-blue-500/20 hover:shadow-2xl transition-all duration-300 flex items-center justify-center group"
+              >
+                Explore Courses
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </motion.button>
+              </Link>
+              <button className="px-8 py-4 rounded-full bg-transparent border border-indigo-500 hover:bg-indigo-500/20 transition-all hover:scale-105 flex items-center justify-center">
+                <Bot className="w-5 h-5 mr-2" /> Chat with Ozon
+              </button>
+            </div>
+          </div>
+        </section>
+        <HomePageSections />
+      </>
+    }
+  />
+  <Route path="/courses" element={<CoursesPage />} /> {/* Explore Courses Route */}
+  <Route path="/ai-news" element={<NewsSection />} /> {/* AI News Route */}
+</Routes>
 
         {/* Footer */}
         <Footer />
@@ -156,7 +175,7 @@ const HomePageSections = () => {
   return (
     <>
       {/* Why Choose Us */}
-      <section className="py-24 px-4 bg-[#1a1a2e]/50">
+      <section className="pt-40 py-24 px-4 bg-[#1a1a2e]/50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 text-white">
             Why Choose Us
