@@ -19,15 +19,16 @@ import {
   Users,
   MessageSquare,
 } from "lucide-react";
-import { motion } from "framer-motion"; // Import motion from framer-motion
-import CoursesPage from "./components/CoursesPage"; // Ensure this path is correct
-import NewsSection from "./components/NewsSection"; // Import the NewsSection component
-import ScrollToTop from "./ScrollToTop"; // Import the ScrollToTop component
+import { motion } from "framer-motion";
+import CoursesPage from "./components/CoursesPage";
+import NewsSection from "./components/NewsSection";
+import ScrollToTop from "./ScrollToTop";
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-  const [showAuth, setShowAuth] = useState(false); // Add showAuth state
+  const [showAuth, setShowAuth] = useState(false);
+
   useEffect(() => {
     setIsVisible(true);
 
@@ -49,18 +50,16 @@ function App() {
 
   return (
     <Router>
-      <ScrollToTop /> {/* Add ScrollToTop component */}
+      <ScrollToTop />
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-[#1a1a2e] to-[#1a1a2e] text-gray-100 overflow-auto">
         {/* Navbar */}
         <nav className="fixed w-full bg-[#1a1a2e]/80 backdrop-blur-lg z-50 border-b border-indigo-500/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center">
-              <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-              <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-               OZON
-              </div> 
-              </div>
+                <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                  OZON
+                </div>
               </div>
               <div className="hidden md:block">
                 <div className="flex items-center space-x-8">
@@ -72,31 +71,29 @@ function App() {
                     <Info className="w-4 h-4" />
                     <span>About</span>
                   </Link>
-                  
                   <a href="https://ozon-resume--xi.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center">
-                  <BookOpen className="w-4 h-4 mr-2" /> Resume Builder
+                    <BookOpen className="w-4 h-4 mr-2" /> Resume Builder
                   </a>
-                  {/* AI News Link */}
                   <Link to="/ai-news" className="hover:text-indigo-400 flex items-center">
                     <Newspaper className="w-4 h-4 mr-2" /> AI News
                   </Link>
                   <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center px-4 py-2 text-blue-100/80 hover:text-white transition-colors"
-                onClick={() => setShowAuth(true)}
-              >
-                <LogIn className="h-5 w-5 mr-2" />
-                Sign In
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="flex items-center px-6 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
-              >
-                <UserPlus className="h-5 w-5 mr-2" />
-                Sign Up
-              </motion.button>
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center px-4 py-2 text-blue-100/80 hover:text-white transition-colors"
+                    onClick={() => setShowAuth(true)}
+                  >
+                    <LogIn className="h-5 w-5 mr-2" />
+                    Sign In
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex items-center px-6 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+                  >
+                    <UserPlus className="h-5 w-5 mr-2" />
+                    Sign Up
+                  </motion.button>
                 </div>
               </div>
               <div className="md:hidden">
@@ -106,46 +103,84 @@ function App() {
               </div>
             </div>
           </div>
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="md:hidden">
+              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <Link to="/" className="flex items-center space-x-2 hover:text-indigo-400 transition-colors block px-3 py-2 rounded-md text-base font-medium">
+                  <Home className="w-4 h-4" />
+                  <span>Home</span>
+                </Link>
+                <Link to="#" className="flex items-center space-x-2 hover:text-indigo-400 transition-colors block px-3 py-2 rounded-md text-base font-medium">
+                  <Info className="w-4 h-4" />
+                  <span>About</span>
+                </Link>
+                <a href="https://ozon-resume--xi.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center block px-3 py-2 rounded-md text-base font-medium">
+                  <BookOpen className="w-4 h-4 mr-2" /> Resume Builder
+                </a>
+                <Link to="/ai-news" className="hover:text-indigo-400 flex items-center block px-3 py-2 rounded-md text-base font-medium">
+                  <Newspaper className="w-4 h-4 mr-2" /> AI News
+                </Link>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center px-4 py-2 text-blue-100/80 hover:text-white transition-colors block px-3 py-2 rounded-md text-base font-medium"
+                  onClick={() => setShowAuth(true)}
+                >
+                  <LogIn className="h-5 w-5 mr-2" />
+                  Sign In
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center px-6 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 block px-3 py-2 rounded-md text-base font-medium"
+                >
+                  <UserPlus className="h-5 w-5 mr-2" />
+                  Sign Up
+                </motion.button>
+              </div>
+            </div>
+          )}
         </nav>
 
         {/* Routes for Pages */}
         <Routes>
-  <Route
-    path="/"
-    element={
-      <>
-        <section className="pt-40 pb-20 px-4 max-w-7xl mx-auto">
-          <div className={`text-center transform transition-all duration-1000 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
-              Transform Your Career with AI-Driven Skills
-            </h1>
-            <p className="text-xl text-neon-blue mb-8 max-w-2xl mx-auto">
-             Discover personalized learning paths and advance your career with intelligent skill recommendations powered by cutting-edge AI technology.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/courses">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-4 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold text-lg shadow-lg hover:shadow-blue-500/20 hover:shadow-2xl transition-all duration-300 flex items-center justify-center group"
-              >
-                Explore Courses
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </motion.button>
-              </Link>
-              <button className="px-8 py-4 rounded-full bg-transparent border border-indigo-500 hover:bg-indigo-500/20 transition-all hover:scale-105 flex items-center justify-center">
-                <Bot className="w-5 h-5 mr-2" /> Chat with Ozon
-              </button>
-            </div>
-          </div>
-        </section>
-        <HomePageSections />
-      </>
-    }
-  />
-  <Route path="/courses" element={<CoursesPage />} /> {/* Explore Courses Route */}
-  <Route path="/ai-news" element={<NewsSection />} /> {/* AI News Route */}
-</Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <section className="pt-40 pb-20 px-4 max-w-7xl mx-auto">
+                  <div className={`text-center transform transition-all duration-1000 ${isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
+                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
+                      Transform Your Career with AI-Driven Skills
+                    </h1>
+                    <p className="text-xl text-neon-blue mb-8 max-w-2xl mx-auto">
+                      Discover personalized learning paths and advance your career with intelligent skill recommendations powered by cutting-edge AI technology.
+                    </p>
+                    <div className="flex flex-col sm:flex-row justify-center gap-4">
+  <Link to="/courses">
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      className="px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold text-base sm:text-lg shadow-lg hover:shadow-blue-500/20 hover:shadow-2xl transition-all duration-300 flex items-center justify-center group"
+    >
+      Explore Courses
+      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+    </motion.button>
+  </Link>
+  <button className="px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-transparent border border-indigo-500 text-white font-semibold text-base sm:text-lg hover:bg-indigo-500/20 transition-all hover:scale-105 flex items-center justify-center group">
+    <Bot className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" /> Chat with Ozon
+  </button>
+</div>
+                  </div>
+                </section>
+                <HomePageSections />
+              </>
+            }
+          />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/ai-news" element={<NewsSection />} />
+        </Routes>
 
         {/* Footer */}
         <Footer />
@@ -157,7 +192,6 @@ function App() {
 // HomePageSections Component
 const HomePageSections = () => {
   useEffect(() => {
-    // Reset visibility state when the component mounts
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -285,23 +319,22 @@ const HomePageSections = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-24 px-4 bg-[#1a1a2e]/50">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16 text-white">
-            How It Works
-          </h2>
-          <div className="aspect-w-16 aspect-h-9 mb-16 animate-on-scroll opacity-0">
-          <iframe
-            
-            className="w-full h-[500px] rounded-2xl"
-            src="https://www.youtube.com/embed/fTzXFPh6CPI?si=FYNpEHh-sfvhzoem"
-            title="Platform Tutorial"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-          </div>
-        </div>
-      </section>
+  <section className="py-24 px-4 bg-[#1a1a2e]/50">
+  <div className="max-w-7xl mx-auto">
+    <h2 className="text-4xl font-bold text-center mb-16 text-white">
+      How It Works
+    </h2>
+    <div className="aspect-w-16 aspect-h-9 mb-16 animate-on-scroll opacity-0">
+      <iframe
+        className="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-2xl"
+        src="https://www.youtube.com/embed/fTzXFPh6CPI?si=FYNpEHh-sfvhzoem"
+        title="Platform Tutorial"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    </div>
+  </div>
+</section>
 
       {/* Contact Form */}
       <section className="py-24 px-4">
