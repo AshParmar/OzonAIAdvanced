@@ -5,7 +5,9 @@
 body::-webkit-scrollbar {
   width: 12px;
 }
-
+.text-neon-blue {
+  color: #81b1e5; /* Bright blue color similar to the provided image */
+}
 body::-webkit-scrollbar-track {
   background: #0f0728; /* Dark background for the track */
 }

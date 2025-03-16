@@ -119,8 +119,8 @@ function App() {
             <h1 className="text-5xl md:text-7xl font-bold text-white mb-6">
               Transform Your Career with AI-Driven Skills
             </h1>
-            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Discover personalized learning paths and advance your career with intelligent skill recommendations powered by cutting-edge AI technology.
+            <p className="text-xl text-neon-blue mb-8 max-w-2xl mx-auto">
+             Discover personalized learning paths and advance your career with intelligent skill recommendations powered by cutting-edge AI technology.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link to="/courses">

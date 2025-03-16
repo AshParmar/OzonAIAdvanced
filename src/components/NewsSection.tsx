@@ -27,8 +27,8 @@ const NewsSection: React.FC = () => {
     { name: "Cybersecurity", icon: <FaShieldAlt />, query: "cybersecurity OR ethical hacking OR network security" },
     { name: "Blockchain", icon: <FaBitcoin />, query: "blockchain OR cryptocurrency OR web3 OR smart contracts" },
   ];
+
   useEffect(() => {
-    console.log("API_KEY:", API_KEY); // Add this line to check if the API key is being read correctly
     fetchNews(category);
   }, [category]);
 
@@ -44,9 +44,14 @@ const NewsSection: React.FC = () => {
           apiKey: API_KEY,
         },
       });
-      setArticles(response.data.articles);
+      if (response.data.status === "error") {
+        setError(response.data.message || "Failed to load news. Check API key or network.");
+      } else {
+        setArticles(response.data.articles);
+      }
     } catch (err) {
       setError("Failed to load news. Check API key or network.");
+      console.error(err);
     }
     setLoading(false);
   };
