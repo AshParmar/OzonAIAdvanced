@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OZON CourseBot Advisor</title>
+    <style>
+        :root {
+            --primary-color: #2E8B57;
+            --secondary-color: #20B2AA;
+            --background-color: #0A2A38;
+            --chat-background: #0A2A38;
+            --user-message-bg: #2E8B57;
+            --bot-message-bg: rgba(46, 139, 87, 0.2);
+            --text-color: #f5f7fa;
+            --border-color: rgba(32, 178, 170, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom right, #0A2A38, #0F3F4F);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: rgba(10, 42, 56, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .chat-header {
+            background: linear-gradient(to right, #2E8B57, #20B2AA);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chat-header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(to right, #ffffff, #e0f2f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .chat-header img {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: var(--chat-background);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 12px 15px;
+            border-radius: 15px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .bot-message {
+            background-color: var(--bot-message-bg);
+            border: 1px solid var(--border-color);
+            border-bottom-left-radius: 5px;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+
+        .user-message {
+            background-color: var(--user-message-bg);
+            color: white;
+            border-bottom-right-radius: 5px;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .message-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .choice-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .choice-btn:hover {
+            background-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .chat-footer {
+            padding: 15px;
+            background-color: rgba(10, 42, 56, 0.8);
+            display: flex;
+            border-top: 1px solid var(--border-color);
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 1rem;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        #user-input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(32, 178, 170, 0.3);
+        }
+
+        #send-button {
+            background: linear-gradient(to right, #2E8B57, #20B2AA);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        #send-button:hover {
+            transform: scale(1.05);
+            background: linear-gradient(to right, #20B2AA, #3CB371);
+        }
+
+        #restart-button {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            margin-left: auto;
+        }
+
+        #restart-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .typing-indicator {
+            display: flex;
+            padding: 10px 15px;
+            background-color: var(--bot-message-bg);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            width: fit-content;
+            border: 1px solid var(--border-color);
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            margin: 0 1px;
+            background-color: #9E9EA1;
+            display: block;
+            border-radius: 50%;
+            opacity: 0.4;
+        }
+
+        .typing-indicator span:nth-of-type(1) {
+            animation: blink 1s infinite 0.3s;
+        }
+
+        .typing-indicator span:nth-of-type(2) {
+            animation: blink 1s infinite 0.5s;
+        }
+
+        .typing-indicator span:nth-of-type(3) {
+            animation: blink 1s infinite 0.7s;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 1;
+            }
+        }
+
+        .course-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 12px;
+            background-color: rgba(10, 42, 56, 0.6);
+            transition: all 0.3s;
+        }
+
+        .course-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(32, 178, 170, 0.2);
+            border-color: rgba(32, 178, 170, 0.4);
+        }
+
+        .course-card h4 {
+            margin: 0 0 8px 0;
+            color: #20B2AA;
+            font-weight: 600;
+        }
+
+        .course-card p {
+            margin: 0 0 8px 0;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+        }
+
+        .stars {
+            color: #20B2AA;
+            font-size: 0.9rem;
+        }
+
+        /* Animation classes */
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Remove default input styles for WebKit browsers */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+            -webkit-text-fill-color: white;
+            -webkit-box-shadow: 0 0 0px 1000px var(--background-color) inset;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container animate-fade-in">
+        <div class="chat-header">
+            <img src="/api/placeholder/30/30" alt="chatbot icon">
+            <h1>OZON CourseBot</h1>
+            <button id="restart-button">Start Over</button>
+        </div>
+        <div class="chat-body" id="chat-body">
+            <!-- Messages will be displayed here -->
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button id="send-button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Course database
+        const courseDatabase = {
+            programming: [
+                { id: "p1", title: "Python for Beginners", description: "Learn Python programming from scratch", rating: 4.8, duration: "8 weeks", level: "Beginner", price: "$49.99" },
+                { id: "p2", title: "Advanced JavaScript", description: "Modern JS features and frameworks", rating: 4.6, duration: "10 weeks", level: "Intermediate", price: "$69.99" },
+                { id: "p3", title: "Full Stack Web Development", description: "Build complete web applications", rating: 4.9, duration: "12 weeks", level: "Intermediate", price: "$89.99" },
+                { id: "p4", title: "Java Programming Masterclass", description: "Comprehensive Java training", rating: 4.7, duration: "16 weeks", level: "Beginner to Advanced", price: "$79.99" }
+            ],
+            dataScience: [
+                { id: "d1", title: "Data Science Fundamentals", description: "Introduction to data analysis", rating: 4.7, duration: "10 weeks", level: "Beginner", price: "$59.99" },
+                { id: "d2", title: "Machine Learning A-Z", description: "Complete ML techniques and algorithms", rating: 4.9, duration: "14 weeks", level: "Intermediate", price: "$79.99" },
+                { id: "d3", title: "Deep Learning Specialization", description: "Neural networks and deep learning", rating: 4.8, duration: "12 weeks", level: "Advanced", price: "$89.99" },
+                { id: "d4", title: "SQL for Data Analysis", description: "Database queries for analytics", rating: 4.6, duration: "6 weeks", level: "Beginner", price: "$49.99" }
+            ],
+            design: [
+                { id: "g1", title: "UI/UX Design Principles", description: "Fundamentals of user interface design", rating: 4.7, duration: "8 weeks", level: "Beginner", price: "$59.99" },
+                { id: "g2", title: "Adobe Photoshop Masterclass", description: "Complete guide to Photoshop", rating: 4.8, duration: "10 weeks", level: "Beginner to Intermediate", price: "$69.99" },
+                { id: "g3", title: "Web Design Portfolio Course", description: "Build professional design projects", rating: 4.9, duration: "12 weeks", level: "Intermediate", price: "$79.99" },
+                { id: "g4", title: "Motion Graphics with After Effects", description: "Create stunning animations", rating: 4.7, duration: "8 weeks", level: "Intermediate", price: "$69.99" }
+            ],
+            business: [
+                { id: "b1", title: "Digital Marketing Fundamentals", description: "Learn essential marketing skills", rating: 4.6, duration: "8 weeks", level: "Beginner", price: "$49.99" },
+                { id: "b2", title: "Project Management Professional", description: "Preparation for PMP certification", rating: 4.8, duration: "12 weeks", level: "Intermediate", price: "$79.99" },
+                { id: "b3", title: "Financial Analysis & Modeling", description: "Build financial models and analysis", rating: 4.7, duration: "10 weeks", level: "Intermediate", price: "$69.99" },
+                { id: "b4", title: "Entrepreneurship Fundamentals", description: "Start and grow your business", rating: 4.9, duration: "8 weeks", level: "Beginner", price: "$59.99" }
+            ]
+        };
+
+        // Chat state
+        const chatState = {
+            currentState: "greeting",
+            userPreferences: {
+                category: null,
+                level: null,
+                duration: null
+            }
+        };
+
+        // Chat flow states
+        const chatFlow = {
+            greeting: {
+                message: "Hi there! 👋 I'm OZON CourseBot, your personal course advisor. I can help you find the perfect course based on your interests and requirements. What subject are you interested in learning?",
+                choices: ["Programming", "Data Science", "Design", "Business"]
+            },
+            askLevel: {
+                message: "Great choice! What's your experience level in this field?",
+                choices: ["Beginner", "Intermediate", "Advanced"]
+            },
+            askDuration: {
+                message: "Perfect! And how much time can you commit to learning?",
+                choices: ["Short (4-6 weeks)", "Medium (8-10 weeks)", "Long (12+ weeks)"]
+            },
+            provideRecommendations: {
+                message: "Based on your preferences, here are some courses I recommend:",
+                generateChoices: function() {
+                    return ["Show more options", "Start over"];
+                }
+            },
+            farewell: {
+                message: "Thanks for using OZON CourseBot! Is there anything else you'd like to know about these courses?",
+                choices: ["Find different courses", "No, that's all for now"]
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatBody = document.getElementById('chat-body');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const restartButton = document.getElementById('restart-button');
+
+            // Add animation to elements
+            document.querySelectorAll('.course-card, .message, .choices').forEach(el => {
+                el.classList.add('animate-on-scroll');
+            });
+
+            // Initial greeting
+            setTimeout(() => {
+                addBotMessage(chatFlow.greeting.message);
+                showChoices(chatFlow.greeting.choices);
+            }, 500);
+
+            // Send message when button is clicked
+            sendButton.addEventListener('click', () => {
+                handleUserInput();
+            });
+
+            // Send message when Enter key is pressed
+            userInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleUserInput();
+                }
+            });
+
+            // Restart conversation
+            restartButton.addEventListener('click', () => {
+                restartChat();
+            });
+
+            // Handle button choices
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('choice-btn')) {
+                    const choiceText = e.target.textContent;
+                    handleUserChoice(choiceText);
+                }
+            });
+
+            function handleUserInput() {
+                const message = userInput.value.trim();
+                if (message !== '') {
+                    addUserMessage(message);
+                    userInput.value = '';
+                    
+                    // Process natural language input
+                    processUserMessage(message);
+                }
+            }
+
+            function handleUserChoice(choice) {
+                addUserMessage(choice);
+                
+                switch(chatState.currentState) {
+                    case "greeting":
+                        handleCategoryChoice(choice);
+                        break;
+                    case "askLevel":
+                        handleLevelChoice(choice);
+                        break;
+                    case "askDuration":
+                        handleDurationChoice(choice);
+                        break;
+                    case "provideRecommendations":
+                        if (choice === "Show more options") {
+                            provideMoreRecommendations();
+                        } else if (choice === "Start over") {
+                            restartChat();
+                        }
+                        break;
+                    case "farewell":
+                        if (choice === "Find different courses") {
+                            restartChat();
+                        } else {
+                            addBotMessage("Got it! Feel free to come back anytime you need help finding courses. Have a great day! 😊");
+                        }
+                        break;
+                }
+            }
+
+            function processUserMessage(message) {
+                // Simple NLP to detect intentions
+                message = message.toLowerCase();
+                
+                // Detect category interests
+                const categoryKeywords = {
+                    programming: ["programming", "coding", "developer", "software", "web", "app", "python", "javascript", "java"],
+                    dataScience: ["data", "analytics", "machine learning", "ai", "artificial intelligence", "statistics", "analysis"],
+                    design: ["design", "ui", "ux", "graphic", "photoshop", "illustrator", "creative"],
+                    business: ["business", "marketing", "finance", "management", "entrepreneur", "startup"]
+                };
+                
+                // Check for category keywords
+                let detectedCategory = null;
+                for (const [category, keywords] of Object.entries(categoryKeywords)) {
+                    if (keywords.some(keyword => message.includes(keyword))) {
+                        detectedCategory = category;
+                        break;
+                    }
+                }
+                
+                if (detectedCategory) {
+                    chatState.userPreferences.category = detectedCategory;
+                    showTypingIndicator();
+                    setTimeout(() => {
+                        addBotMessage(`I see you're interested in ${detectedCategory.charAt(0).toUpperCase() + detectedCategory.slice(1)}. Great choice!`);
+                        chatState.currentState = "askLevel";
+                        addBotMessage(chatFlow.askLevel.message);
+                        showChoices(chatFlow.askLevel.choices);
+                    }, 1000);
+                    return;
+                }
+                
+                // Detect level
+                const levelKeywords = {
+                    beginner: ["beginner", "new", "start", "basic", "fundamental", "novice", "elementary"],
+                    intermediate: ["intermediate", "some experience", "familiar", "moderate"],
+                    advanced: ["advanced", "expert", "professional", "experienced", "proficient"]
+                };
+                
+                let detectedLevel = null;
+                for (const [level, keywords] of Object.entries(levelKeywords)) {
+                    if (keywords.some(keyword => message.includes(keyword))) {
+                        detectedLevel = level;
+                        break;
+                    }
+                }
+                
+                if (detectedLevel && chatState.currentState === "askLevel") {
+                    chatState.userPreferences.level = detectedLevel;
+                    showTypingIndicator();
+                    setTimeout(() => {
+                        addBotMessage(`Got it! Looking for ${detectedLevel} level courses.`);
+                        chatState.currentState = "askDuration";
+                        addBotMessage(chatFlow.askDuration.message);
+                        showChoices(chatFlow.askDuration.choices);
+                    }, 1000);
+                    return;
+                }
+                
+                // If we couldn't determine intent, provide a helpful response
+                showTypingIndicator();
+                setTimeout(() => {
+                    if (chatState.currentState === "greeting") {
+                        addBotMessage("I'd love to help you find the right course. Could you tell me which subject area you're interested in?");
+                        showChoices(chatFlow.greeting.choices);
+                    } else if (chatState.currentState === "askLevel") {
+                        addBotMessage("To recommend the best courses, I need to know your experience level. Are you a beginner, intermediate, or advanced learner?");
+                        showChoices(chatFlow.askLevel.choices);
+                    } else if (chatState.currentState === "askDuration") {
+                        addBotMessage("How much time can you dedicate to the course? This helps me find options that fit your schedule.");
+                        showChoices(chatFlow.askDuration.choices);
+                    } else {
+                        addBotMessage("I'm here to help you find the perfect course. Would you like to start the recommendation process?");
+                        showChoices(["Yes, find me courses", "No thanks"]);
+                    }
+                }, 1000);
+            }
+
+            function handleCategoryChoice(choice) {
+                const categoryMap = {
+                    "Programming": "programming",
+                    "Data Science": "dataScience",
+                    "Design": "design",
+                    "Business": "business"
+                };
+                
+                chatState.userPreferences.category = categoryMap[choice];
+                chatState.currentState = "askLevel";
+                
+                showTypingIndicator();
+                setTimeout(() => {
+                    addBotMessage(chatFlow.askLevel.message);
+                    showChoices(chatFlow.askLevel.choices);
+                }, 1000);
+            }
+
+            function handleLevelChoice(choice) {
+                chatState.userPreferences.level = choice.toLowerCase();
+                chatState.currentState = "askDuration";
+                
+                showTypingIndicator();
+                setTimeout(() => {
+                    addBotMessage(chatFlow.askDuration.message);
+                    showChoices(chatFlow.askDuration.choices);
+                }, 1000);
+            }
+
+            function handleDurationChoice(choice) {
+                let duration;
+                if (choice === "Short (4-6 weeks)") {
+                    duration = "short";
+                } else if (choice === "Medium (8-10 weeks)") {
+                    duration = "medium";
+                } else {
+                    duration = "long";
+                }
+                
+                chatState.userPreferences.duration = duration;
+                chatState.currentState = "provideRecommendations";
+                
+                showTypingIndicator();
+                setTimeout(() => {
+                    provideRecommendations();
+                }, 1500);
+            }
+
+            function provideRecommendations() {
+                const { category, level } = chatState.userPreferences;
+                let recommendations = [];
+                
+                // Filter courses based on preferences
+                if (courseDatabase[category]) {
+                    recommendations = courseDatabase[category].filter(course => {
+                        const courseLevelLower = course.level.toLowerCase();
+                        return courseLevelLower.includes(level);
+                    });
+                    
+                    // If no exact matches, provide all from the category
+                    if (recommendations.length === 0) {
+                        recommendations = courseDatabase[category].slice(0, 2);
+                    }
+                }
+                
+                if (recommendations.length > 0) {
+                    addBotMessage(chatFlow.provideRecommendations.message);
+                    
+                    // Display course recommendations
+                    recommendations.slice(0, 2).forEach(course => {
+                        addCourseCard(course);
+                    });
+                    
+                    showChoices(chatFlow.provideRecommendations.generateChoices());
+                } else {
+                    addBotMessage("I couldn't find courses matching your exact criteria. Here are some popular options in your chosen category:");
+                    
+                    courseDatabase[category].slice(0, 2).forEach(course => {
+                        addCourseCard(course);
+                    });
+                    
+                    showChoices(chatFlow.provideRecommendations.generateChoices());
+                }
+                
+                chatState.currentState = "farewell";
+                setTimeout(() => {
+                    addBotMessage(chatFlow.farewell.message);
+                    showChoices(chatFlow.farewell.choices);
+                }, 2000);
+            }
+
+            function provideMoreRecommendations() {
+                const { category } = chatState.userPreferences;
+                
+                showTypingIndicator();
+                setTimeout(() => {
+                    addBotMessage("Here are some additional courses you might find interesting:");
+                    
+                    // Get the remaining courses we haven't shown yet
+                    const remainingCourses = courseDatabase[category].slice(2);
+                    remainingCourses.forEach(course => {
+                        addCourseCard(course);
+                    });
+                    
+                    setTimeout(() => {
+                        addBotMessage("That's all the courses I have in this category. Would you like to explore courses in another category?");
+                        showChoices(["Find different courses", "No, that's all for now"]);
+                    }, 500);
+                }, 1000);
+            }
+
+            function restartChat() {
+                // Clear chat and reset state
+                chatBody.innerHTML = '';
+                chatState.currentState = "greeting";
+                chatState.userPreferences = {
+                    category: null,
+                    level: null,
+                    duration: null
+                };
+                
+                // Show greeting message again
+                addBotMessage(chatFlow.greeting.message);
+                showChoices(chatFlow.greeting.choices);
+            }
+
+            function addUserMessage(message) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message-container animate-fade-in';
+                
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message user-message';
+                messageContent.textContent = message;
+                
+                messageDiv.appendChild(messageContent);
+                chatBody.appendChild(messageDiv);
+                
+                scrollToBottom();
+            }
+
+            function addBotMessage(message) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'message-container animate-fade-in';
+                
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message bot-message';
+                messageContent.textContent = message;
+                
+                messageDiv.appendChild(messageContent);
+                chatBody.appendChild(messageDiv);
+                
+                scrollToBottom();
+            }
+
+            function showChoices(choices) {
+                const choicesDiv = document.createElement('div');
+                choicesDiv.className = 'choices animate-fade-in';
+                
+                choices.forEach(choice => {
+                    const button = document.createElement('button');
+                    button.className = 'choice-btn';
+                    button.textContent = choice;
+                    choicesDiv.appendChild(button);
+                });
+                
+                chatBody.appendChild(choicesDiv);
+                scrollToBottom();
+            }
+
+            function addCourseCard(course) {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'course-card animate-fade-in';
+                
+                const title = document.createElement('h4');
+                title.textContent = course.title;
+                
+                const description = document.createElement('p');
+                description.textContent = course.description;
+                
+                const details = document.createElement('p');
+                details.innerHTML = `<strong>Level:</strong> ${course.level} | <strong>Duration:</strong> ${course.duration} | <strong>Price:</strong> ${course.price}`;
+                
+                const rating = document.createElement('p');
+                rating.className = 'stars';
+                rating.innerHTML = `Rating: ${course.rating} ${'★'.repeat(Math.round(course.rating))}`;
+                
+                cardDiv.appendChild(title);
+                cardDiv.appendChild(description);
+                cardDiv.appendChild(details);
+                cardDiv.appendChild(rating);
+                
+                chatBody.appendChild(cardDiv);
+                scrollToBottom();
+            }
+
+            function showTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'typing-indicator';
+                typingDiv.id = 'typing-indicator';
+                
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('span');
+                    typingDiv.appendChild(dot);
+                }
+                
+                chatBody.appendChild(typingDiv);
+                scrollToBottom();
+            }
+
+            function scrollToBottom() {
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }
+            
+            // Initialize intersection observer for animations
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animate-fade-in');
+                        }
+                    });
+                },
+                { threshold: 0.1 }
+            );
+
+            document.querySelectorAll('.animate-on-scroll').forEach((el) => observer.observe(el));
+        });
+    </script>
+</body>
+</html>
