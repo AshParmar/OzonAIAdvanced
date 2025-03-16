@@ -57,7 +57,9 @@ function App() {
             <div className="flex items-center justify-between h-16">
               <div className="flex items-center">
               <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                <img src="/src/ozon.png" alt="Description of image" style={{ width: '70px', height: '70px' }} />
+              <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+               OZON
+              </div> 
               </div>
               </div>
               <div className="hidden md:block">
