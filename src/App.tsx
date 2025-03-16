@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import {
   Menu,
   X,
@@ -17,7 +17,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import CoursesPage from "./components/CoursesPage"; // Ensure this path is correct
-import NewsSection from "./NewsSection"; // Import the NewsSection component
+import NewsSection from "./components/NewsSection"; // Import the NewsSection component
 import ScrollToTop from "./ScrollToTop"; // Import the ScrollToTop component
 
 function App() {
@@ -135,8 +135,6 @@ function App() {
 
 // HomePageSections Component
 const HomePageSections = () => {
-  const location = useLocation();
-
   useEffect(() => {
     // Reset visibility state when the component mounts
     const observer = new IntersectionObserver(
@@ -153,7 +151,7 @@ const HomePageSections = () => {
     document.querySelectorAll(".animate-on-scroll").forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
-  }, [location]);
+  }, []);
 
   return (
     <>
