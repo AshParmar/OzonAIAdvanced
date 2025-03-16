@@ -289,13 +289,14 @@ const HomePageSections = () => {
             How It Works
           </h2>
           <div className="aspect-w-16 aspect-h-9 mb-16 animate-on-scroll opacity-0">
-            <iframe
-              className="w-full h-[500px] rounded-2xl"
-              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-              title="Platform Tutorial"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+          <iframe
+            
+            className="w-full h-[500px] rounded-2xl"
+            src="https://www.youtube.com/embed/fTzXFPh6CPI?si=FYNpEHh-sfvhzoem"
+            title="Platform Tutorial"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
           </div>
         </div>
       </section>
