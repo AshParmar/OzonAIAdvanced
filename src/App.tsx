@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
+
+
+
 import {
   Menu,
   X,
@@ -25,6 +29,8 @@ import NewsSection from "./components/NewsSection";
 import ScrollToTop from "./ScrollToTop";
 
 function App() {
+  const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
@@ -77,26 +83,34 @@ function App() {
                   <Link to="/ai-news" className="hover:text-indigo-400 flex items-center">
                     <Newspaper className="w-4 h-4 mr-2" /> AI News
                   </Link>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center px-4 py-2 text-blue-100/80 hover:text-white transition-colors"
-                    onClick={() => setShowAuth(true)}
-                  >
-                    <LogIn className="h-5 w-5 mr-2" />
-                    Sign In
-                  </motion.button>
-                  <motion.button
+                 
+          
+{isAuthenticated ? (
+<motion.button
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+  className="flex items-center px-6 py-2 rounded-full bg-gradient-to-r from-red-500 to-red-700 text-white hover:shadow-lg hover:shadow-red-500/20 transition-all duration-300"
+  onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+>
+  Log Out
+</motion.button>) : (
+  <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className="flex items-center px-6 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+                    onClick={() => loginWithRedirect()} 
+                    
                   >
                     <UserPlus className="h-5 w-5 mr-2" />
                     Sign Up
-                  </motion.button>
+                  </motion.button>)}
+                  
+ 
                 </div>
+                
               </div>
               <div className="md:hidden">
+              
                 <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
                   {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                 </button>
