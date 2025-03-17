@@ -55,96 +55,103 @@ function App() {
     <Router>
       <ScrollToTop />
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-[#1a1a2e] to-[#1a1a2e] text-gray-100 overflow-auto">
-        {/* Navbar */}
-        <nav className="fixed w-full bg-[#1a1a2e]/80 backdrop-blur-lg z-50 border-b border-indigo-500/20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center">
-                <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-                  OZON
-                </div>
-              </div>
-              <div className="hidden md:block">
-                <div className="flex items-center space-x-8">
-                  <Link to="/" className="flex items-center space-x-2 hover:text-indigo-400 transition-colors">
-                    <Home className="w-4 h-4" />
-                    <span>Home</span>
-                  </Link>
-                  <Link to="#" className="flex items-center space-x-2 hover:text-indigo-400 transition-colors">
-                    <Info className="w-4 h-4" />
-                    <span>About</span>
-                  </Link>
-                  <a href="https://ozon-resume--xi.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center">
-                    <BookOpen className="w-4 h-4 mr-2" /> Resume Builder
-                  </a>
-                  <Link to="/ai-news" className="hover:text-indigo-400 flex items-center">
-                    <Newspaper className="w-4 h-4 mr-2" /> AI News
-                  </Link>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center px-4 py-2 text-blue-100/80 hover:text-white transition-colors"
-                    onClick={() => setShowAuth(true)}
-                  >
-                    <LogIn className="h-5 w-5 mr-2" />
-                    Sign In
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center px-6 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
-                  >
-                    <UserPlus className="h-5 w-5 mr-2" />
-                    Sign Up
-                  </motion.button>
-                </div>
-              </div>
-              <div className="md:hidden">
-                <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                  {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                </button>
-              </div>
-            </div>
-          </div>
-          {/* Mobile Menu */}
-          {isMenuOpen && (
-            <div className="md:hidden">
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <Link to="/" className="flex items-center space-x-2 hover:text-indigo-400 transition-colors block px-3 py-2 rounded-md text-base font-medium">
-                  <Home className="w-4 h-4" />
-                  <span>Home</span>
-                </Link>
-                <Link to="#" className="flex items-center space-x-2 hover:text-indigo-400 transition-colors block px-3 py-2 rounded-md text-base font-medium">
-                  <Info className="w-4 h-4" />
-                  <span>About</span>
-                </Link>
-                <a href="https://ozon-resume--xi.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center block px-3 py-2 rounded-md text-base font-medium">
-                  <BookOpen className="w-4 h-4 mr-2" /> Resume Builder
-                </a>
-                <Link to="/ai-news" className="hover:text-indigo-400 flex items-center block px-3 py-2 rounded-md text-base font-medium">
-                  <Newspaper className="w-4 h-4 mr-2" /> AI News
-                </Link>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center px-4 py-2 text-blue-100/80 hover:text-white transition-colors block px-3 py-2 rounded-md text-base font-medium"
-                  onClick={() => setShowAuth(true)}
-                >
-                  <LogIn className="h-5 w-5 mr-2" />
-                  Sign In
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center px-6 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 block px-3 py-2 rounded-md text-base font-medium"
-                >
-                  <UserPlus className="h-5 w-5 mr-2" />
-                  Sign Up
-                </motion.button>
-              </div>
-            </div>
-          )}
-        </nav>
+      <nav className="fixed w-full bg-[#1a1a2e]/80 backdrop-blur-lg z-50 border-b border-indigo-500/20">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="flex items-center justify-between h-16">
+      {/* Left: Logo */}
+      <div className="flex items-center">
+         {/* Logo Image */}
+         <img src="/image.png" alt="Ozon AI Logo" className="h-12 w-auto" />
+
+        
+        <div className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+        
+        </div>
+      </div>
+
+      {/* Desktop Menu */}
+      <div className="hidden md:block">
+        <div className="flex items-center space-x-8">
+          <Link to="/" className="flex items-center space-x-2 hover:text-indigo-400 transition-colors">
+            <Home className="w-4 h-4" />
+            <span>Home</span>
+          </Link>
+          <Link to="#" className="flex items-center space-x-2 hover:text-indigo-400 transition-colors">
+            <Info className="w-4 h-4" />
+            <span>About</span>
+          </Link>
+          <a href="https://ozon-resume--xi.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center">
+            <BookOpen className="w-4 h-4 mr-2" /> Resume Builder
+          </a>
+          <Link to="/ai-news" className="hover:text-indigo-400 flex items-center">
+            <Newspaper className="w-4 h-4 mr-2" /> AI News
+          </Link>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center px-4 py-2 text-blue-100/80 hover:text-white transition-colors"
+          >
+            <LogIn className="h-5 w-5 mr-2" />
+            Sign In
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center px-6 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+          >
+            <UserPlus className="h-5 w-5 mr-2" />
+            Sign Up
+          </motion.button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Button */}
+      <div className="md:hidden">
+        <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {/* Mobile Menu */}
+  {isMenuOpen && (
+    <div className="md:hidden">
+      <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        <Link to="/" className="flex items-center space-x-2 hover:text-indigo-400 transition-colors block px-3 py-2 rounded-md text-base font-medium">
+          <Home className="w-4 h-4" />
+          <span>Home</span>
+        </Link>
+        <Link to="#" className="flex items-center space-x-2 hover:text-indigo-400 transition-colors block px-3 py-2 rounded-md text-base font-medium">
+          <Info className="w-4 h-4" />
+          <span>About</span>
+        </Link>
+        <a href="https://ozon-resume--xi.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center block px-3 py-2 rounded-md text-base font-medium">
+          <BookOpen className="w-4 h-4 mr-2" /> Resume Builder
+        </a>
+        <Link to="/ai-news" className="hover:text-indigo-400 flex items-center block px-3 py-2 rounded-md text-base font-medium">
+          <Newspaper className="w-4 h-4 mr-2" /> AI News
+        </Link>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="flex items-center px-4 py-2 text-blue-100/80 hover:text-white transition-colors block px-3 py-2 rounded-md text-base font-medium"
+        >
+          <LogIn className="h-5 w-5 mr-2" />
+          Sign In
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="flex items-center px-6 py-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 block px-3 py-2 rounded-md text-base font-medium"
+        >
+          <UserPlus className="h-5 w-5 mr-2" />
+          Sign Up
+        </motion.button>
+      </div>
+    </div>
+  )}
+</nav>
 
         {/* Routes for Pages */}
         <Routes>
