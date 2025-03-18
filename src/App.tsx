@@ -27,6 +27,9 @@ import { motion } from "framer-motion";
 import CoursesPage from "./components/CoursesPage";
 import NewsSection from "./components/NewsSection";
 import ScrollToTop from "./ScrollToTop";
+import logo from "../logo.png";
+
+
 
 function App() {
   const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
