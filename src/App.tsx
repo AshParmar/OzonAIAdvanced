@@ -27,6 +27,7 @@ import { motion } from "framer-motion";
 import CoursesPage from "./components/CoursesPage";
 import NewsSection from "./components/NewsSection";
 import ScrollToTop from "./ScrollToTop";
+import ChatOzon from "./components/ChatOzon";
 import logo from "../logo.png";
 
 
@@ -185,9 +186,11 @@ function App() {
       <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
     </motion.button>
   </Link>
+  <Link to="/chatozon">
   <button className="px-6 py-3 sm:px-8 sm:py-4 rounded-full bg-transparent border border-indigo-500 text-white font-semibold text-base sm:text-lg hover:bg-indigo-500/20 transition-all hover:scale-105 flex items-center justify-center group">
     <Bot className="w-5 h-5 mr-2 group-hover:translate-x-1 transition-transform" /> Chat with Ozon
   </button>
+  </Link>
 </div>
                   </div>
                 </section>
@@ -197,6 +200,7 @@ function App() {
           />
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/ai-news" element={<NewsSection />} />
+          <Route path="/chatozon" element={<ChatOzon />} />
         </Routes>
 
         {/* Footer */}

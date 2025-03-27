@@ -1,211 +1,452 @@
-import React, { useState } from 'react';
-import { Search, Code2, Shield, Brain, Database, Smartphone, ChevronRight, Trophy, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Code, Shield, Brain, Database, Smartphone, Clock, RefreshCcw, Search, Star, ExternalLink, Tag, User } from 'lucide-react';
+import axios from 'axios';
+
+interface Course {
+  course_title: string;
+  course_organization: string;
+  course_rating: number;
+  course_url: string;
+  course_skills: string[] | string;
+  course_summary: string;
+  course_difficulty: string;
+  course_time: string;
+  course_students_enrolled: string;
+  course_description: string;
+  course_certificate_type?: string;
+  course_reviews_num?: number;
+}
 
 interface Skill {
   id: string;
   name: string;
   icon: React.ReactNode;
-  color: string;
+  activeColor: string;
+  description: string;
 }
 
-interface Course {
-  id: string;
-  title: string;
-  platform: string;
-  xp: number;
-  level: string;
-  duration: string;
-}
+const skills: Skill[] = [
+  {
+    id: 'web',
+    name: 'Web Development',
+    icon: <Code className="w-8 h-8" />,
+    activeColor: 'bg-purple-500',
+    description: 'Learn to build modern web applications',
+  },
+  {
+    id: 'security',
+    name: 'Cybersecurity',
+    icon: <Shield className="w-8 h-8" />,
+    activeColor: 'bg-red-500',
+    description: 'Master digital security and ethical hacking',
+  },
+  {
+    id: 'ai',
+    name: 'Artificial Intelligence',
+    icon: <Brain className="w-8 h-8" />,
+    activeColor: 'bg-blue-500',
+    description: 'Explore machine learning and AI concepts',
+  },
+  {
+    id: 'data science',
+    name: 'Data Science',
+    icon: <Database className="w-8 h-8" />,
+    activeColor: 'bg-green-500',
+    description: 'Analyze and visualize complex data',
+  },
+  {
+    id: 'machine learning',
+    name: 'Machine Learning',
+    icon: <Smartphone className="w-8 h-8" />,
+    activeColor: 'bg-orange-500',
+    description: 'Create apps for iOS and Android',
+  },
+];
+
+const levels = [
+  { 
+    id: 'beginner', 
+    name: 'Beginner', 
+    description: 'Perfect for newcomers',
+    color: 'from-green-400 to-emerald-500'
+  },
+  { 
+    id: 'intermediate', 
+    name: 'Intermediate', 
+    description: 'Build on your knowledge',
+    color: 'from-blue-400 to-indigo-500'
+  },
+  { 
+    id: 'advanced', 
+    name: 'Advanced', 
+    description: 'Master your skills',
+    color: 'from-purple-400 to-pink-500'
+  },
+];
+
+const durations = [
+  { id: 'short', name: '1-4 weeks', description: 'Short and focused' },
+  { id: 'medium', name: '1-3 months', description: 'Comprehensive learning' },
+  { id: 'long', name: '3+ months', description: 'In-depth mastery' },
+];
 
 function App() {
   const [selectedSkill, setSelectedSkill] = useState<string | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
-  const [showResults, setShowResults] = useState(false);
-  const [xpProgress, setXpProgress] = useState(0);
-  const [showUnlockMessage, setShowUnlockMessage] = useState(false);
-
-  const skills: Skill[] = [
-    { id: 'webdev', name: 'Web Development', icon: <Code2 className="w-15 h-15" />, color: 'bg-blue-500' },
-    { id: 'cyber', name: 'Cybersecurity', icon: <Shield className="w-15 h-15" />, color: 'bg-red-500' },
-    { id: 'ai', name: 'Artificial Intelligence', icon: <Brain className="w-15 h-15" />, color: 'bg-purple-500' },
-    { id: 'data', name: 'Data Science', icon: <Database className="w-15 h-15" />, color: 'bg-green-500' },
-    { id: 'mobile', name: 'Mobile Development', icon: <Smartphone className="w-15 h-15" />, color: 'bg-yellow-500' },
-  ];
-
-  const courses: Course[] = [
-    {
-      id: '1',
-      title: 'Advanced Machine Learning',
-      platform: 'Coursera',
-      xp: 500,
-      level: 'Advanced',
-      duration: '12 weeks'
-    },
-    {
-      id: '2',
-      title: 'Full Stack Development',
-      platform: 'Udemy',
-      xp: 400,
-      level: 'Intermediate',
-      duration: '8 weeks'
-    },
-    {
-      id: '3',
-      title: 'Cybersecurity Fundamentals',
-      platform: 'edX',
-      xp: 300,
-      level: 'Basic',
-      duration: '6 weeks'
-    },
-  ];
+  const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showTooltip, setShowTooltip] = useState<string | null>(null);
+  const [recommendations, setRecommendations] = useState<Course[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSkillSelect = (skillId: string) => {
-    setSelectedSkill(skillId);
-    setXpProgress(33);
+    setSelectedSkill(prev => prev === skillId ? null : skillId);
+    setSelectedLevel(null);
+    setSelectedDuration(null);
+    setRecommendations([]);
   };
 
-  const handleLevelSelect = (level: string) => {
-    setSelectedLevel(level);
-    setXpProgress(66);
+  const handleLevelSelect = (levelId: string) => {
+    setSelectedLevel(prev => prev === levelId ? null : levelId);
+    setSelectedDuration(null);
+    setRecommendations([]);
   };
 
-  const handleGetRecommendations = () => {
-    setShowResults(true);
-    setXpProgress(100);
-    setShowUnlockMessage(true);
-    setTimeout(() => setShowUnlockMessage(false), 3000);
+  const handleDurationSelect = (durationId: string) => {
+    setSelectedDuration(prev => prev === durationId ? null : durationId);
+  };
+
+  const handleReset = () => {
+    setSelectedSkill(null);
+    setSelectedLevel(null);
+    setSelectedDuration(null);
+    setSearchQuery('');
+    setRecommendations([]);
+    setError(null);
+  };
+
+  const handleGetRecommendations = async () => {
+    if (!selectedSkill || !selectedLevel || !selectedDuration) return;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const response = await axios.post('http://localhost:5000/api/recommend', {
+        interests: selectedSkill,
+        skillLevel: selectedLevel,
+        duration: selectedDuration
+      });
+
+      const courses = response.data.recommendations || response.data || [];
+      
+      const processedCourses = courses.map((course: Course) => ({
+        ...course,
+        course_skills: parseSkills(course.course_skills),
+        course_rating: parseRating(course.course_rating)
+      }));
+
+      setRecommendations(processedCourses);
+      
+    } catch (err: any) {
+      console.error("API Error:", err);
+      setError(err.response?.data?.error || err.message || 'Failed to fetch recommendations');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const parseSkills = (skills: string[] | string): string[] => {
+    if (Array.isArray(skills)) return skills;
+    try {
+      // Handle different string formats (JSON, string representation of array)
+      if (skills.startsWith('[')) {
+        return JSON.parse(skills.replace(/'/g, '"'));
+      }
+      return skills.split(',').map(s => s.trim());
+    } catch {
+      return [skills];
+    }
+  };
+
+  const parseRating = (rating: any): number => {
+    if (typeof rating === 'number') return rating;
+    if (typeof rating === 'string') return parseFloat(rating) || 0;
+    return 0;
+  };
+
+  useEffect(() => {
+    if (selectedSkill && selectedLevel && selectedDuration) {
+      handleGetRecommendations();
+    }
+  }, [selectedSkill, selectedLevel, selectedDuration]);
+
+  const getProgressWidth = () => {
+    if (selectedSkill && selectedLevel && selectedDuration) return 'w-full';
+    if (selectedSkill && selectedLevel) return 'w-2/3';
+    if (selectedSkill) return 'w-1/3';
+    return 'w-0';
+  };
+
+  const filteredSkills = skills.filter(skill =>
+    skill.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    skill.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const renderCourseSkills = (skills: string[] | string) => {
+    const skillsArray = parseSkills(skills);
+    if (!skillsArray.length) return null;
+    
+    return (
+      <div className="mt-3 flex flex-wrap gap-2">
+        {skillsArray.slice(0, 3).map((skill, i) => (
+          <span key={i} className="text-xs px-2 py-1 rounded-full bg-purple-400/10 text-purple-400">
+            {skill}
+          </span>
+        ))}
+        {skillsArray.length > 3 && (
+          <span className="text-xs px-2 py-1 rounded-full bg-white/10 text-white/60">
+            +{skillsArray.length - 3} more
+          </span>
+        )}
+      </div>
+    );
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-white p-8">
+    <div className="min-h-screen bg-[#2D1B69] text-white p-4 md:p-8">
+      {/* Header */}
+      <div className="max-w-6xl mx-auto flex justify-between items-center mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+          
+        </h1>
+        {(selectedSkill || selectedLevel || selectedDuration || searchQuery) && (
+          <button
+            onClick={handleReset}
+            className="flex items-center px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
+          >
+            <RefreshCcw className="w-4 h-4 mr-2" />
+            Reset
+          </button>
+        )}
+      </div>
+
       {/* Search Bar */}
-      <div className="max-w-4xl mx-auto mb-12 mt-10">
+      <div className="max-w-6xl mx-auto mb-8 md:mb-12">
         <div className="relative">
-          <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/50" />
           <input
             type="text"
-            placeholder="Search for skills..."
-            className="w-full pl-12 pr-4 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search skills (web, security, AI, etc.)..."
+            className="w-full px-12 py-3 rounded-full bg-white/10 border border-white/20 focus:outline-none focus:border-purple-400"
           />
         </div>
       </div>
 
-      {/* XP Progress Bar */}
-      <div className="max-w-4xl mx-auto mb-8">
-        <div className="h-4 bg-white/10 rounded-full overflow-hidden">
+      {/* Progress Bar */}
+      <div className="max-w-6xl mx-auto mb-8 md:mb-12">
+        <div className="flex justify-between text-xs md:text-sm mb-2">
+          <span className={selectedSkill ? 'text-purple-400 font-medium' : 'text-white/60'}>1. Choose Skill</span>
+          <span className={selectedLevel ? 'text-purple-400 font-medium' : 'text-white/60'}>2. Select Level</span>
+          <span className={selectedDuration ? 'text-purple-400 font-medium' : 'text-white/60'}>3. Duration</span>
+          <span className={selectedSkill && selectedLevel && selectedDuration ? 'text-purple-400 font-medium' : 'text-white/60'}>4. Results</span>
+        </div>
+        <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-1000"
-            style={{ width: `${xpProgress}%` }}
+            className={`h-full rounded-full transition-all duration-500 ease-out bg-gradient-to-r from-purple-400 to-pink-400 ${getProgressWidth()}`}
           />
         </div>
-        <div className="flex justify-between mt-2 text-sm text-gray-300">
-          <span>Choose Skill</span>
-          <span>Select Level</span>
-          <span>Get Results</span>
-        </div>
       </div>
-
-      {/* Unlock Message */}
-      {showUnlockMessage && (
-        <div className="fixed top-4 right-4 bg-gradient-to-r from-yellow-400 to-yellow-600 p-4 rounded-lg shadow-lg animate-bounce">
-          <div className="flex items-center gap-2">
-            <Trophy className="h-6 w-6" />
-            <span>Congratulations! You've unlocked a new skill path!</span>
-          </div>
-        </div>
-      )}
 
       {/* Skills Section */}
-      <section className="max-w-4xl mx-auto mb-12">
-        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-          <Sparkles className="h-6 w-6" />
-          Choose Your Skill
+      <div className="max-w-6xl mx-auto mb-12 md:mb-16">
+        <h2 className="text-xl md:text-2xl font-bold mb-6 flex items-center">
+          <span className="mr-2">✨</span>
+          What do you want to learn?
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {skills.map((skill) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+          {filteredSkills.map((skill) => (
             <button
               key={skill.id}
               onClick={() => handleSkillSelect(skill.id)}
-              className={`${
-                selectedSkill === skill.id ? `${skill.color} ring-4 ring-white/50` : 'bg-white/10 hover:bg-white/20'
-              } p-6 rounded-xl transition-all duration-300 backdrop-blur-sm flex flex-col items-center gap-3`}
+              onMouseEnter={() => setShowTooltip(skill.id)}
+              onMouseLeave={() => setShowTooltip(null)}
+              className={`relative p-4 md:p-6 rounded-xl flex flex-col items-center justify-center text-center transition-all duration-300 hover:scale-105 ${
+                selectedSkill === skill.id 
+                  ? `${skill.activeColor} ring-2 md:ring-4 ring-purple-400/50 shadow-lg` 
+                  : 'bg-purple-700/80 hover:bg-purple-600'
+              }`}
             >
               {skill.icon}
-              <span className="text-sm font-medium">{skill.name}</span>
+              <span className="mt-2 md:mt-3 text-sm font-medium">{skill.name}</span>
+              {showTooltip === skill.id && (
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1.5 bg-black/90 text-white text-xs rounded-lg whitespace-nowrap z-10">
+                  {skill.description}
+                </div>
+              )}
             </button>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* Level Selection */}
+      {/* Levels Section */}
       {selectedSkill && (
-        <section className="max-w-4xl mx-auto mb-12">
-          <h2 className="text-2xl font-bold mb-6">Select Your Level</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {['Basic', 'Intermediate', 'Advanced'].map((level) => (
+        <div className="max-w-6xl mx-auto mb-12 md:mb-16 animate-fade-in">
+          <h2 className="text-xl md:text-2xl font-bold mb-6">What's your current skill level?</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+            {levels.map((level) => (
               <button
-                key={level}
-                onClick={() => handleLevelSelect(level)}
-                className={`${
-                  selectedLevel === level
-                    ? 'bg-purple-500 ring-4 ring-purple-300/50'
-                    : 'bg-white/10 hover:bg-white/20'
-                } p-6 rounded-xl transition-all duration-300`}
+                key={level.id}
+                onClick={() => handleLevelSelect(level.id)}
+                className={`group p-5 md:p-6 rounded-xl text-center transition-all duration-300 ${
+                  selectedLevel === level.id 
+                    ? `bg-gradient-to-r ${level.color} shadow-lg scale-[1.02]` 
+                    : 'bg-purple-700/80 hover:bg-purple-600'
+                }`}
               >
-                <h3 className="text-xl font-semibold mb-2">{level}</h3>
-                <p className="text-sm text-gray-300">
-                  {level === 'Basic' && 'Perfect for beginners'}
-                  {level === 'Intermediate' && 'Build on your knowledge'}
-                  {level === 'Advanced' && 'Master your skills'}
+                <h3 className="text-lg md:text-xl font-semibold mb-1 md:mb-2">{level.name}</h3>
+                <p className={`text-xs md:text-sm ${
+                  selectedLevel === level.id ? 'text-white/90' : 'text-gray-300'
+                }`}>
+                  {level.description}
                 </p>
               </button>
             ))}
           </div>
-        </section>
-      )}
-
-      {/* Get Recommendations Button */}
-      {selectedSkill && selectedLevel && !showResults && (
-        <div className="max-w-4xl mx-auto mb-12 text-center">
-          <button
-            onClick={handleGetRecommendations}
-            className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full text-lg font-bold
-              hover:from-purple-600 hover:to-pink-600 transform hover:scale-105 transition-all duration-300
-              animate-pulse hover:animate-none flex items-center gap-2 mx-auto"
-          >
-            Get Recommendations
-            <ChevronRight className="h-5 w-5" />
-          </button>
         </div>
       )}
 
-      {/* Results */}
-      {showResults && (
-        <section className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6">Recommended Courses</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courses.map((course) => (
-              <div
-                key={course.id}
-                className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:transform hover:scale-105 transition-all duration-300"
+      {/* Duration Section */}
+      {selectedLevel && (
+        <div className="max-w-6xl mx-auto mb-12 md:mb-16 animate-fade-in">
+          <h2 className="text-xl md:text-2xl font-bold mb-6 flex items-center">
+            <Clock className="w-5 h-5 md:w-6 md:h-6 mr-2" />
+            How much time can you commit?
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+            {durations.map((duration) => (
+              <button
+                key={duration.id}
+                onClick={() => handleDurationSelect(duration.id)}
+                className={`p-5 md:p-6 rounded-xl text-center transition-all duration-300 ${
+                  selectedDuration === duration.id 
+                    ? 'bg-gradient-to-r from-violet-400 to-fuchsia-500 shadow-lg scale-[1.02]' 
+                    : 'bg-purple-700/80 hover:bg-purple-600'
+                }`}
               >
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-xl font-semibold">{course.title}</h3>
-                  <span className="bg-purple-500 px-3 py-1 rounded-full text-sm">+{course.xp} XP</span>
+                <h3 className="text-lg md:text-xl font-semibold mb-1 md:mb-2">{duration.name}</h3>
+                <p className="text-xs md:text-sm text-gray-300">{duration.description}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Status Messages */}
+      {isLoading && (
+        <div className="max-w-6xl mx-auto text-center py-8">
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/10">
+            <RefreshCcw className="w-5 h-5 mr-2 animate-spin" />
+            <span>Finding the best courses for you...</span>
+          </div>
+        </div>
+      )}
+
+      {error && (
+        <div className="max-w-6xl mx-auto text-center py-8">
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-red-500/20 text-red-300">
+            <span>{error}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Recommendations Section */}
+      {recommendations.length > 0 && (
+        <div className="max-w-6xl mx-auto mt-8 md:mt-16 animate-fade-in">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl md:text-2xl font-bold">
+              Recommended Courses ({recommendations.length})
+            </h2>
+            {recommendations.length > 3 && (
+              <button 
+                onClick={handleReset}
+                className="text-sm text-purple-400 hover:text-purple-300 flex items-center"
+              >
+                <RefreshCcw className="w-4 h-4 mr-1" />
+                Search Again
+              </button>
+            )}
+          </div>
+          
+          <div className="grid gap-4 md:gap-6">
+            {recommendations.map((course, index) => (
+              <div
+                key={`${course.course_title}-${index}`}
+                className="bg-white/5 backdrop-blur-sm rounded-xl p-5 md:p-6 border border-white/10 hover:border-purple-400/30 transition-all duration-300 hover:shadow-lg"
+              >
+                <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                  <div className="flex-1">
+                    <h3 className="text-lg md:text-xl font-semibold text-white group-hover:text-purple-400 mb-1">
+                      {course.course_title}
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs md:text-sm text-gray-300 mb-2">
+                      <span className="flex items-center">
+                        <User className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                        {course.course_organization}
+                      </span>
+                      <span className="flex items-center">
+                        <Clock className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                        {course.course_time}
+                      </span>
+                      {course.course_certificate_type && (
+                        <span className="flex items-center">
+                          <Tag className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                          {course.course_certificate_type}
+                        </span>
+                      )}
+                    </div>
+                    
+                    {course.course_summary && (
+                      <p className="text-sm text-gray-300 mt-2 line-clamp-2">
+                        {course.course_summary}
+                      </p>
+                    )}
+                    
+                    {renderCourseSkills(course.course_skills)}
+                  </div>
+                  
+                  <div className="flex flex-col items-end gap-2">
+                    {course.course_rating > 0 && (
+                      <div className="flex items-center bg-yellow-400/10 px-2 py-1 rounded-full">
+                        <Star className="w-3 h-3 md:w-4 md:h-4 text-yellow-400" />
+                        <span className="ml-1 text-xs md:text-sm text-yellow-400">
+                          {course.course_rating.toFixed(1)}
+                        </span>
+                      </div>
+                    )}
+                    
+                    <a
+                      href={course.course_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-xs md:text-sm text-purple-400 hover:text-purple-300 transition mt-2"
+                    >
+                      View Course
+                      <ExternalLink className="w-3 h-3 md:w-4 md:h-4 ml-1" />
+                    </a>
+                    
+                    <span className="text-xs px-2 py-1 rounded-full bg-purple-400/10 text-purple-400 capitalize">
+                      {course.course_difficulty}
+                    </span>
+                  </div>
                 </div>
-                <div className="mb-4">
-                  <p className="text-gray-300 text-sm mb-1">Platform: {course.platform}</p>
-                  <p className="text-gray-300 text-sm mb-1">Level: {course.level}</p>
-                  <p className="text-gray-300 text-sm">Duration: {course.duration}</p>
-                </div>
-                <button className="w-full py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg
-                  hover:from-purple-600 hover:to-pink-600 transition-all duration-300">
-                  Start Learning
-                </button>
               </div>
             ))}
           </div>
-        </section>
+        </div>
       )}
     </div>
   );
