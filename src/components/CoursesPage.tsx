@@ -138,36 +138,53 @@ function App() {
         skillLevel: selectedLevel,
         duration: selectedDuration
       });
-
-      const courses = response.data.recommendations || response.data || [];
+  
+      // Ensure we always have an array, even if the response structure is unexpected
+      let courses: Course[] = [];
       
-      const processedCourses = courses.map((course: Course) => ({
+      if (Array.isArray(response.data?.recommendations)) {
+        courses = response.data.recommendations;
+      } else if (Array.isArray(response.data)) {
+        courses = response.data;
+      } else if (response.data?.recommendations && typeof response.data.recommendations === 'object') {
+        // Handle case where recommendations might be an object instead of array
+        courses = Object.values(response.data.recommendations);
+      }
+  
+      const processedCourses = courses.map((course: any) => ({
         ...course,
         course_skills: parseSkills(course.course_skills),
         course_rating: parseRating(course.course_rating)
       }));
-
+  
       setRecommendations(processedCourses);
       
     } catch (err: any) {
       console.error("API Error:", err);
       setError(err.response?.data?.error || err.message || 'Failed to fetch recommendations');
+      setRecommendations([]); // Ensure empty array on error
     } finally {
       setIsLoading(false);
     }
   };
 
-  const parseSkills = (skills: string[] | string): string[] => {
+  const parseSkills = (skills: string[] | string | any): string[] => {
+    if (!skills) return [];
     if (Array.isArray(skills)) return skills;
-    try {
-      // Handle different string formats (JSON, string representation of array)
-      if (skills.startsWith('[')) {
-        return JSON.parse(skills.replace(/'/g, '"'));
+    if (typeof skills === 'string') {
+      try {
+        // Handle JSON string
+        if (skills.startsWith('[') || skills.startsWith('{')) {
+          const parsed = JSON.parse(skills.replace(/'/g, '"'));
+          return Array.isArray(parsed) ? parsed : [parsed];
+        }
+        // Handle comma-separated string
+        return skills.split(',').map(s => s.trim());
+      } catch {
+        return [skills];
       }
-      return skills.split(',').map(s => s.trim());
-    } catch {
-      return [skills];
     }
+    return [];
   };
 
   const parseRating = (rating: any): number => {

@@ -201,6 +201,7 @@ function App() {
           <Route path="/courses" element={<CoursesPage />} />
           <Route path="/ai-news" element={<NewsSection />} />
           <Route path="/chatozon" element={<ChatOzon />} />
+          
         </Routes>
 
         {/* Footer */}
